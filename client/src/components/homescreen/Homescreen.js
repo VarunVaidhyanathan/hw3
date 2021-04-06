@@ -14,6 +14,9 @@ import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
+	SortTaskItems_Transaction,
+	SortDateItems_Transaction,
+	SortStatusItems_Transaction,
 	EditItem_Transaction } 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
@@ -26,6 +29,10 @@ const Homescreen = (props) => {
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
 
+
+	const [SortStatusTodoItems] 	= useMutation(mutations.SORT_ITEMS_BY_STATUS);
+	const [SortDateTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DATE);
+	const [SortTaskTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DESCRIPTION);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
 	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD);
@@ -91,7 +98,7 @@ const Homescreen = (props) => {
 	};
 
 
-	const deleteItem = async (item) => {
+	const deleteItem = async (item, index) => {
 		let listID = activeList._id;
 		let itemID = item._id;
 		let opcode = 0;
@@ -103,7 +110,7 @@ const Homescreen = (props) => {
 			assigned_to: item.assigned_to,
 			completed: item.completed
 		}
-		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
+		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem, index);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -126,6 +133,33 @@ const Homescreen = (props) => {
 
 	};
 
+	//sort by task
+	const sortTaskItem = async (itemID) => {
+		let listID = activeList._id;
+		let transaction = new SortTaskItems_Transaction(listID, itemID, SortTaskTodoItems);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+
+	};
+
+	//sort by due date
+	const sortDateItem = async (itemID) => {
+		let listID = activeList._id;
+		let transaction = new SortDateItems_Transaction(listID, itemID, SortDateTodoItems);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+
+	};
+
+	//sort by due date
+	const sortStatusItem = async (itemID) => {
+		let listID = activeList._id;
+		let transaction = new SortStatusItems_Transaction(listID, itemID, SortStatusTodoItems);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+
+	};
+
 	const createNewList = async () => {
 		const length = todolists.length
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
@@ -137,7 +171,12 @@ const Homescreen = (props) => {
 			items: [],
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		setActiveList(list)
+		await refetchTodos(refetch);
+  			if(data) {
+   				let _id = data.addTodolist;
+   				let newList = todolists.find(list => list._id === _id);
+   				setActiveList(newList)
+  			}
 	};
 
 	const deleteList = async (_id) => {
@@ -225,6 +264,9 @@ const Homescreen = (props) => {
 									editItem={editItem} reorderItem={reorderItem}
 									setShowDelete={setShowDelete}
 									activeList={activeList} setActiveList={setActiveList}
+									sortTaskItem={sortTaskItem}
+									sortDateItem={sortDateItem}
+									sortStatusItem={sortStatusItem}
 								/>
 							</div>
 						:

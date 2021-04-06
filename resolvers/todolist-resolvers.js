@@ -36,18 +36,19 @@ module.exports = {
 			@returns {string} the objectID of the item or an error message
 		**/
 		addItem: async(_, args) => {
-			const { _id, item } = args;
+			const { _id, item , index } = args;
 			const listId = new ObjectId(_id);
 			const objectId = new ObjectId();
 			const found = await Todolist.findOne({_id: listId});
 			if(!found) return ('Todolist not found');
-			item._id = objectId;
+			if(item._id === '') item._id = objectId;
 			let listItems = found.items;
-			listItems.push(item);
+			if(index < 0) listItems.push(item);
+   			else listItems.splice(index, 0, item);
 			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
-			if(updated) return (objectId);
+			if(updated) return (item._id);
 			else return ('Could not add item');
 		},
 		/** 
@@ -163,7 +164,224 @@ module.exports = {
 			listItems = found.items;
 			return (found.items);
 
+		},
+		//resolver to sort item task wise
+		sortTaskItems: async (_, args) => {
+			const { _id} = args;
+			let num = 1;
+			// if(flag == false)
+			// 	num = 1;
+			// console.log(num);
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+			let copyListItems = [];
+			for(let i=0;i<listItems.length;i++){
+				copyListItems.push(listItems[i]);
+			}
+			//listItems[0].description = listItems[1].description;
+			for(let i=0;i<listItems.length;i++){
+				for(let j=0;j<listItems.length-1;j++){
+					if(listItems[i].description.localeCompare(listItems[j].description) == num){
+						let temp = listItems[j];
+						console.log("temp 1st sort : "+temp);
+						listItems[j] = listItems[i];
+						listItems[i] = temp;
+						console.log("listItems[j] 1st sort :"+listItems[j]);
+					}
+				}
+			}
+			let k = false;
+			for(let i=0;i<listItems.length;i++){
+				console.log("listItems[i].description: "+listItems[i]);
+				console.log("copyListItems[i].description: "+copyListItems[i]);
+				if(listItems[i].description.localeCompare(copyListItems[i].description)!= 0){
+					k = true;
+					console.log("lists are different");
+				}
+			}
+			if(k==false){
+				num = 1;
+				console.log("lists are same");
+				for(let i=0;i<listItems.length;i++){
+					for(let j=0;j<listItems.length-1;j++){
+						console.log(listItems[j].description+"    "+listItems[i].description);
+						if(listItems[j].description.localeCompare(listItems[i].description) == num){
+							console.log("swap performed");
+							let temp = listItems[j];
+							console.log("temp : "+temp);
+							listItems[j] = listItems[i];
+							listItems[i] = temp;
+							console.log("listItems[j] :"+listItems[j]);
+						}
+					}
+				}
+			}
+			//if(listItems == found.items){
+			//	console.log("UHSUYGSHIUHS");
+			// 	for(let i=0;i<listItems.length;i++){
+			// 		for(let j=0;j<listItems.length;j++){
+			// 			if(listItems[i].description.localeCompare(listItems[j].description) == 1){
+			// 				let temp = listItems[j];
+			// 				listItems[j] = listItems[i];
+			// 				listItems[i] = temp;
+			// 			}
+			// 		}
+			// 	}
+			//}
+			
+			console.log("first item: "+listItems[0].description);
+			console.log("resolver @@@@@@@@@@@@@@reached");
+			// for(let i = 0; i< listItems.length; i++){
+			// 	if(listItems[i] != found.items[i]){
+			// 		return (listItems);;
+			// 	}
+			// }
+			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
+			if(updated) return (listItems);
+			listItems = copyListItems;
+			return (copyListItems);
+			
+		},
+		//resolver to sort item date wise
+		sortDateItems: async (_, args) => {
+			const { _id} = args;
+			let num = 1;
+			// if(flag == false)
+			// 	num = 1;
+			// console.log(num);
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+			let copyListItems = [];
+			for(let i=0;i<listItems.length;i++){
+				copyListItems.push(listItems[i]);
+			}
+			//listItems[0].description = listItems[1].description;
+			for(let i=0;i<listItems.length;i++){
+				for(let j=0;j<listItems.length-1;j++){
+					if(listItems[i].due_date.localeCompare(listItems[j].due_date) == num){
+						let temp = listItems[j];
+						console.log("temp 1st sort : "+temp);
+						listItems[j] = listItems[i];
+						listItems[i] = temp;
+						console.log("listItems[j] 1st sort :"+listItems[j]);
+					}
+				}
+			}
+			let k = false;
+			for(let i=0;i<listItems.length;i++){
+				console.log("listItems[i].due_date: "+listItems[i]);
+				console.log("copyListItems[i].due_date: "+copyListItems[i]);
+				if(listItems[i].due_date.localeCompare(copyListItems[i].due_date)!= 0){
+					k = true;
+					console.log("lists are different");
+				}
+			}
+			if(k==false){
+				num = 1;
+				console.log("lists are same");
+				for(let i=0;i<listItems.length;i++){
+					for(let j=0;j<listItems.length-1;j++){
+						console.log(listItems[j].due_date+"    "+listItems[i].due_date);
+						if(listItems[j].due_date.localeCompare(listItems[i].due_date) == num){
+							console.log("swap performed");
+							let temp = listItems[j];
+							console.log("temp : "+temp);
+							listItems[j] = listItems[i];
+							listItems[i] = temp;
+							console.log("listItems[j] :"+listItems[j]);
+						}
+					}
+				}
+			}
+			//if(listItems == found.items){
+			//	console.log("UHSUYGSHIUHS");
+			// 	for(let i=0;i<listItems.length;i++){
+			// 		for(let j=0;j<listItems.length;j++){
+			// 			if(listItems[i].description.localeCompare(listItems[j].description) == 1){
+			// 				let temp = listItems[j];
+			// 				listItems[j] = listItems[i];
+			// 				listItems[i] = temp;
+			// 			}
+			// 		}
+			// 	}
+			//}
+			
+			console.log("first item: "+listItems[0].due_date);
+			console.log("resolver @@@@@@@@@@@@@@reached");
+			// for(let i = 0; i< listItems.length; i++){
+			// 	if(listItems[i] != found.items[i]){
+			// 		return (listItems);;
+			// 	}
+			// }
+			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
+			if(updated) return (listItems);
+			listItems = copyListItems;
+			return (copyListItems);
+			
+		},
+
+		//resolver to sort item status wise
+	sortStatusItems: async (_, args) => {
+		const { _id} = args;
+		let num = 1;
+		// if(flag == false)
+		// 	num = 1;
+		// console.log(num);
+		const listId = new ObjectId(_id);
+		const found = await Todolist.findOne({_id: listId});
+		let listItems = found.items;
+		let copyListItems = [];
+		for(let i=0;i<listItems.length;i++){
+			copyListItems.push(listItems[i]);
 		}
+		let isorted = [];
+		for(let i=0;i<listItems.length;i++){
+			if(!listItems[i].completed){
+				isorted.push(listItems[i]);
+			}
+		}
+		for(let i=0;i<listItems.length;i++){
+			if(listItems[i].completed){
+				isorted.push(listItems[i]);
+			}
+		}
+		let csorted = [];
+		for(let i=0;i<listItems.length;i++){
+			if(listItems[i].completed){
+				csorted.push(listItems[i]);
+			}
+		}
+		for(let i=0;i<listItems.length;i++){
+			if(!listItems[i].completed){
+				csorted.push(listItems[i]);
+			}
+		}
+		console.log("isorted : "+isorted);
+		console.log("csorted : "+csorted);
+		let k = true;
+		for(let i=0;i<listItems.length;i++){
+			if(listItems[i].completed != isorted[i].completed){
+				k = false;
+			}
+		}
+		if(k){
+			listItems = csorted;
+		}
+		else{
+			listItems = isorted;
+		}
+		console.log("listItems: "+listItems);
+
+		const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
+		if(updated) return (listItems);
+		listItems = copyListItems;
+		return (copyListItems);
+		
+	}
 
 	}
+
+	
 }

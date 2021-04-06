@@ -30,9 +30,9 @@ export const LOGOUT = gql`
 `;
 
 export const ADD_ITEM = gql`
-	mutation AddItem($item: ItemInput!, $_id: String!) {
-		addItem(item: $item, _id: $_id)
-	}
+	mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {
+		addItem(item: $item, _id: $_id, index: $index)
+   	}
 `;
 
 export const DELETE_ITEM = gql`
@@ -64,6 +64,45 @@ export const UPDATE_ITEM_FIELD = gql`
 export const REORDER_ITEMS = gql`
 	mutation ReorderItems($_id: String!, $itemId: String!, $direction: Int!) {
 		reorderItems(_id: $_id, itemId: $itemId, direction: $direction) {
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+		}
+	}
+`;
+
+export const SORT_ITEMS_BY_DESCRIPTION = gql`
+	mutation SortTaskItems($_id: String!) {
+		sortTaskItems(_id: $_id) {
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+		}
+	}
+`;
+
+export const SORT_ITEMS_BY_DATE = gql`
+	mutation SortDateItems($_id: String!) {
+		sortDateItems(_id: $_id) {
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+		}
+	}
+`;
+
+export const SORT_ITEMS_BY_STATUS = gql`
+	mutation SortStatusItems($_id: String!) {
+		sortStatusItems(_id: $_id) {
 			_id
 			id
 			description
