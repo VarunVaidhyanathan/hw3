@@ -113,6 +113,28 @@ export class SortStatusItems_Transaction extends jsTPS_Transaction {
     
 }
 
+/*  Handles item assigned_to sorting */
+export class SortAssignedItems_Transaction extends jsTPS_Transaction {
+    constructor(listID, itemID, callback) {
+        super();
+        this.listID = listID;
+        this.itemID = itemID;
+		this.updateFunction = callback;
+	}
+
+    async doTransaction() {
+		const { data } = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		return data;
+    }
+
+    async undoTransaction() {
+		const {data} = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		return data;
+
+    }
+    
+}
+
 
 export class EditItem_Transaction extends jsTPS_Transaction {
 	constructor(listID, itemID, field, prev, update, flag, callback) {

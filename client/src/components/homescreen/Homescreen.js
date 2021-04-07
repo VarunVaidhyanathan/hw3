@@ -17,6 +17,7 @@ import { UpdateListField_Transaction,
 	SortTaskItems_Transaction,
 	SortDateItems_Transaction,
 	SortStatusItems_Transaction,
+	SortAssignedItems_Transaction,
 	EditItem_Transaction } 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
@@ -30,6 +31,7 @@ const Homescreen = (props) => {
 	const [showCreate, toggleShowCreate] 	= useState(false);
 
 
+	const [SortAssignedTodoItems] 	= useMutation(mutations.SORT_ITEMS_BY_ASSIGNED);
 	const [SortStatusTodoItems] 	= useMutation(mutations.SORT_ITEMS_BY_STATUS);
 	const [SortDateTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DATE);
 	const [SortTaskTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DESCRIPTION);
@@ -86,8 +88,9 @@ const Homescreen = (props) => {
 			id: lastID,
 			description: 'No Description',
 			due_date: 'No Date',
-			assigned_to: props.user._id,
-			completed: false
+			assigned_to: 'None Assigned',
+			completed: false,
+			
 		};
 		let opcode = 1;
 		let itemID = newItem._id;
@@ -108,7 +111,8 @@ const Homescreen = (props) => {
 			description: item.description,
 			due_date: item.due_date,
 			assigned_to: item.assigned_to,
-			completed: item.completed
+			completed: item.completed,
+			assigned: item.assigned
 		}
 		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem, index);
 		props.tps.addTransaction(transaction);
@@ -155,6 +159,15 @@ const Homescreen = (props) => {
 	const sortStatusItem = async (itemID) => {
 		let listID = activeList._id;
 		let transaction = new SortStatusItems_Transaction(listID, itemID, SortStatusTodoItems);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+
+	};
+
+	//sort by assigned_to
+	const sortAssignedItem = async (itemID) => {
+		let listID = activeList._id;
+		let transaction = new SortAssignedItems_Transaction(listID, itemID, SortAssignedTodoItems);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -267,6 +280,7 @@ const Homescreen = (props) => {
 									sortTaskItem={sortTaskItem}
 									sortDateItem={sortDateItem}
 									sortStatusItem={sortStatusItem}
+									sortAssignedItem={sortAssignedItem}
 								/>
 							</div>
 						:

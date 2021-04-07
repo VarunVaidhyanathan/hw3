@@ -16,6 +16,7 @@ const typeDefs = gql `
 		due_date: String!
 		assigned_to: String!
 		completed:  Boolean!
+		
 	}
 	extend type Query {
 		getAllTodos: [Todolist]
@@ -32,6 +33,7 @@ const typeDefs = gql `
 		sortTaskItems(_id: String!): [Item]
 		sortDateItems(_id: String!): [Item]
 		sortStatusItems(_id: String!): [Item]
+		sortAssignedItems(_id: String!): [Item]
 	}
 	input FieldInput {
 		_id: String
@@ -52,6 +54,7 @@ const typeDefs = gql `
 		due_date: String
 		assigned_to: String
 		completed:  Boolean
+		
 	}
 `;
 

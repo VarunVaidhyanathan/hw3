@@ -66,7 +66,8 @@ module.exports = {
 				owner: owner,
 				items: items
 			});
-			const updated = newList.save();
+			const updated = await newList.save();
+			//await newList.save();
 			if(updated) return objectId;
 			else return ('Could not add todolist');
 		},
@@ -320,68 +321,143 @@ module.exports = {
 			listItems = copyListItems;
 			return (copyListItems);
 			
+		},//resolver to sort item status wise
+		sortStatusItems: async (_, args) => {
+			const { _id} = args;
+			let num = 1;
+			// if(flag == false)
+			// 	num = 1;
+			// console.log(num);
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+			let copyListItems = [];
+			for(let i=0;i<listItems.length;i++){
+				copyListItems.push(listItems[i]);
+			}
+			let isorted = [];
+			for(let i=0;i<listItems.length;i++){
+				if(!listItems[i].completed){
+					isorted.push(listItems[i]);
+				}
+			}
+			for(let i=0;i<listItems.length;i++){
+				if(listItems[i].completed){
+					isorted.push(listItems[i]);
+				}
+			}
+			let csorted = [];
+			for(let i=0;i<listItems.length;i++){
+				if(listItems[i].completed){
+					csorted.push(listItems[i]);
+				}
+			}
+			for(let i=0;i<listItems.length;i++){
+				if(!listItems[i].completed){
+					csorted.push(listItems[i]);
+				}
+			}
+			console.log("isorted : "+isorted);
+			console.log("csorted : "+csorted);
+			let k = true;
+			for(let i=0;i<listItems.length;i++){
+				if(listItems[i].completed != isorted[i].completed){
+					k = false;
+				}
+			}
+			if(k){
+				listItems = csorted;
+			}
+			else{
+				listItems = isorted;
+			}
+			console.log("listItems: "+listItems);
+
+			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
+			if(updated) return (listItems);
+			listItems = copyListItems;
+			return (copyListItems);
+	
 		},
-
-		//resolver to sort item status wise
-	sortStatusItems: async (_, args) => {
-		const { _id} = args;
-		let num = 1;
-		// if(flag == false)
-		// 	num = 1;
-		// console.log(num);
-		const listId = new ObjectId(_id);
-		const found = await Todolist.findOne({_id: listId});
-		let listItems = found.items;
-		let copyListItems = [];
-		for(let i=0;i<listItems.length;i++){
-			copyListItems.push(listItems[i]);
-		}
-		let isorted = [];
-		for(let i=0;i<listItems.length;i++){
-			if(!listItems[i].completed){
-				isorted.push(listItems[i]);
+		//resolver to sort item assigned_to wise
+		sortAssignedItems: async (_, args) => {
+			const { _id} = args;
+			let num = 1;
+			// if(flag == false)
+			// 	num = 1;
+			// console.log(num);
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+			let copyListItems = [];
+			for(let i=0;i<listItems.length;i++){
+				copyListItems.push(listItems[i]);
 			}
-		}
-		for(let i=0;i<listItems.length;i++){
-			if(listItems[i].completed){
-				isorted.push(listItems[i]);
+			//listItems[0].description = listItems[1].description;
+			for(let i=0;i<listItems.length;i++){
+				for(let j=0;j<listItems.length-1;j++){
+					if(listItems[i].assigned_to.localeCompare(listItems[j].assigned_to) == num){
+						let temp = listItems[j];
+						console.log("temp 1st sort : "+temp);
+						listItems[j] = listItems[i];
+						listItems[i] = temp;
+						console.log("listItems[j] 1st sort :"+listItems[j]);
+					}
+				}
 			}
-		}
-		let csorted = [];
-		for(let i=0;i<listItems.length;i++){
-			if(listItems[i].completed){
-				csorted.push(listItems[i]);
+			let k = false;
+			for(let i=0;i<listItems.length;i++){
+				console.log("listItems[i].description: "+listItems[i]);
+				console.log("copyListItems[i].description: "+copyListItems[i]);
+				if(listItems[i].assigned_to.localeCompare(copyListItems[i].assigned_to)!= 0){
+					k = true;
+					console.log("lists are different");
+				}
 			}
-		}
-		for(let i=0;i<listItems.length;i++){
-			if(!listItems[i].completed){
-				csorted.push(listItems[i]);
+			if(k==false){
+				num = 1;
+				console.log("lists are same");
+				for(let i=0;i<listItems.length;i++){
+					for(let j=0;j<listItems.length-1;j++){
+						console.log(listItems[j].assigned_to+"    "+listItems[i].assigned_to);
+						if(listItems[j].assigned_to.localeCompare(listItems[i].assigned_to) == num){
+							console.log("swap performed");
+							let temp = listItems[j];
+							console.log("temp : "+temp);
+							listItems[j] = listItems[i];
+							listItems[i] = temp;
+							console.log("listItems[j] :"+listItems[j]);
+						}
+					}
+				}
 			}
+			//if(listItems == found.items){
+			//	console.log("UHSUYGSHIUHS");
+			// 	for(let i=0;i<listItems.length;i++){
+			// 		for(let j=0;j<listItems.length;j++){
+			// 			if(listItems[i].description.localeCompare(listItems[j].description) == 1){
+			// 				let temp = listItems[j];
+			// 				listItems[j] = listItems[i];
+			// 				listItems[i] = temp;
+			// 			}
+			// 		}
+			// 	}
+			//}
+			
+			console.log("first item: "+listItems[0].description);
+			console.log("resolver @@@@@@@@@@@@@@reached");
+			// for(let i = 0; i< listItems.length; i++){
+			// 	if(listItems[i] != found.items[i]){
+			// 		return (listItems);;
+			// 	}
+			// }
+			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
+			if(updated) return (listItems);
+			listItems = copyListItems;
+			return (copyListItems);
+			
 		}
-		console.log("isorted : "+isorted);
-		console.log("csorted : "+csorted);
-		let k = true;
-		for(let i=0;i<listItems.length;i++){
-			if(listItems[i].completed != isorted[i].completed){
-				k = false;
-			}
-		}
-		if(k){
-			listItems = csorted;
-		}
-		else{
-			listItems = isorted;
-		}
-		console.log("listItems: "+listItems);
-
-		const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-		if(updated) return (listItems);
-		listItems = copyListItems;
-		return (copyListItems);
-		
-	}
-
-	}
 
 	
+	}
 }

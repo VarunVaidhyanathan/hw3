@@ -44,6 +44,7 @@ export const DELETE_ITEM = gql`
 			due_date
 			assigned_to
 			completed
+			
 		}
 	}
 `;
@@ -57,6 +58,7 @@ export const UPDATE_ITEM_FIELD = gql`
 			due_date
 			assigned_to
 			completed
+			
 		}
 	}
 `;
@@ -70,6 +72,7 @@ export const REORDER_ITEMS = gql`
 			due_date
 			assigned_to
 			completed
+			
 		}
 	}
 `;
@@ -83,6 +86,7 @@ export const SORT_ITEMS_BY_DESCRIPTION = gql`
 			due_date
 			assigned_to
 			completed
+			
 		}
 	}
 `;
@@ -96,6 +100,7 @@ export const SORT_ITEMS_BY_DATE = gql`
 			due_date
 			assigned_to
 			completed
+			
 		}
 	}
 `;
@@ -109,6 +114,21 @@ export const SORT_ITEMS_BY_STATUS = gql`
 			due_date
 			assigned_to
 			completed
+			
+		}
+	}
+`;
+
+export const SORT_ITEMS_BY_ASSIGNED = gql`
+	mutation SortAssignedItems($_id: String!) {
+		sortAssignedItems(_id: $_id) {
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+			
 		}
 	}
 `;
