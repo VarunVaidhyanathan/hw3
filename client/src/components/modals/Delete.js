@@ -10,22 +10,32 @@ const Delete = (props) => {
     }
 
     return (
-        <div className="delete-modal">
-            <div className="modal-header" onClose={() => props.setShowDelete(false)}>
+        <WMMain>
+        <WModal visible={true}>
+            <WMHeader className="modal-header-text" onClose={() => props.setShowDelete(false)}>
                 Delete List?
-			</div>
+			</WMHeader>
 
-            <div>
+            <WMMain>
                 <WButton className="modal-button cancel-button" onClick={() => props.setShowDelete(false)} wType="texted">
                     Cancel
 				</WButton>
                 <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
+                <label className="col-spacer">&nbsp;</label>
                 <WButton className="modal-button" onClick={handleDelete} clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="danger">
                     Delete
 				</WButton>
-            </div>
+            </WMMain>
 
-        </div>
+        </WModal>
+        </WMMain>
     );
 }
 

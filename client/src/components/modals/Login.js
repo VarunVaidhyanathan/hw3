@@ -37,34 +37,38 @@ const Login = (props) => {
 	return (
         // Replace div with WModal
 
-		<div className="login-modal">
-			<div className="modal-header" onClose={() => props.setShowLogin(false)}>
+		<WModal visible={true}>
+			<WMHeader  onClose={() => props.setShowLogin(false)} className="modal-header-text">
 				Login
-			</div>
+			</WMHeader>
 
 			{
-				loading ? <div />
-					: <div className="main-login-modal">
+				loading ? <WMMain />
+					: <WMMain className="main-login-modal">
 
 						<WInput className="modal-input" onBlur={updateInput} name='email' labelAnimation="up" barAnimation="solid" labelText="Email Address" wType="outlined" inputType='text' />
-						<div className="modal-spacer">&nbsp;</div>
+						<WMMain className="modal-spacer">&nbsp;</WMMain>
 						<WInput className="modal-input" onBlur={updateInput} name='password' labelAnimation="up" barAnimation="solid" labelText="Password" wType="outlined" inputType='password' />
 
 						{
-							showErr ? <div className='modal-error'>
+							showErr ? <WMFooter className='modal-error'>
 								{errorMsg}
-							</div>
-								: <div className='modal-error'>&nbsp;</div>
+							</WMFooter>
+								: <WMFooter className='modal-error'>&nbsp;</WMFooter>
 						}
 
-					</div>
+						<WMMain>
+						<WButton className="modal-button" onClick={handleLogin} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+						Login
+						</WButton>
+						
+				
+						</WMMain>
+
+					</WMMain>
 			}
-			<div>
-				<WButton className="modal-button" onClick={handleLogin} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
-					Login
-				</WButton>
-			</div>
-		</div>
+			
+		</WModal>
 	);
 }
 
