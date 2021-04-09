@@ -35,6 +35,7 @@ const Homescreen = (props) => {
 	const [SortStatusTodoItems] 	= useMutation(mutations.SORT_ITEMS_BY_STATUS);
 	const [SortDateTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DATE);
 	const [SortTaskTodoItems] 		= useMutation(mutations.SORT_ITEMS_BY_DESCRIPTION);
+	const [SortTodoItemsUndo] 		= useMutation(mutations.SORT_TODO_ITEMS_UNDO);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
 	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD);
@@ -140,7 +141,7 @@ const Homescreen = (props) => {
 	//sort by task
 	const sortTaskItem = async (itemID) => {
 		let listID = activeList._id;
-		let transaction = new SortTaskItems_Transaction(listID, itemID, SortTaskTodoItems);
+		let transaction = new SortTaskItems_Transaction(listID, itemID, SortTaskTodoItems, SortTodoItemsUndo);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -149,7 +150,7 @@ const Homescreen = (props) => {
 	//sort by due date
 	const sortDateItem = async (itemID) => {
 		let listID = activeList._id;
-		let transaction = new SortDateItems_Transaction(listID, itemID, SortDateTodoItems);
+		let transaction = new SortDateItems_Transaction(listID, itemID, SortDateTodoItems, SortTodoItemsUndo);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -158,7 +159,7 @@ const Homescreen = (props) => {
 	//sort by due date
 	const sortStatusItem = async (itemID) => {
 		let listID = activeList._id;
-		let transaction = new SortStatusItems_Transaction(listID, itemID, SortStatusTodoItems);
+		let transaction = new SortStatusItems_Transaction(listID, itemID, SortStatusTodoItems, SortTodoItemsUndo);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 
@@ -167,7 +168,7 @@ const Homescreen = (props) => {
 	//sort by assigned_to
 	const sortAssignedItem = async (itemID) => {
 		let listID = activeList._id;
-		let transaction = new SortAssignedItems_Transaction(listID, itemID, SortAssignedTodoItems);
+		let transaction = new SortAssignedItems_Transaction(listID, itemID, SortAssignedTodoItems, SortTodoItemsUndo);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 

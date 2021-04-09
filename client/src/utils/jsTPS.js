@@ -49,42 +49,73 @@ export class ReorderItems_Transaction extends jsTPS_Transaction {
 
 /*  Handles item task sorting */
 export class SortTaskItems_Transaction extends jsTPS_Transaction {
-    constructor(listID, itemID, callback) {
+    constructor(listID, itemID, callback, callback2) {
         super();
         this.listID = listID;
         this.itemID = itemID;
+        console.log(this.itemID);
 		this.updateFunction = callback;
+        this.updateFunction2 = callback2;
 	}
 
     async doTransaction() {
-		const { data } = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		const { data } = await this.updateFunction({ variables: {_id: this.listID}});
+        this.oldList = data;
 		return data;
     }
 
     async undoTransaction() {
-		const {data} = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
-		return data;
+        console.log(this.oldList);
+        let newList = [];
+        for(let i=0; i< this.oldList.sortTaskItems.length; i++){
+            let newObject = {
+                _id: this.oldList.sortTaskItems[i]._id,
+		        id: this.oldList.sortTaskItems[i].id,
+		        description: this.oldList.sortTaskItems[i].description,
+		        due_date: this.oldList.sortTaskItems[i].due_date,
+		        assigned_to: this.oldList.sortTaskItems[i].assigned_to,
+		        completed:  this.oldList.sortTaskItems[i].completed
+            }
+            newList.push(newObject);
+        }
 
+        const {data} = await this.updateFunction2({ variables: {_id: this.listID, oldList: newList}});
+		return data;
     }
     
 }
 
 //Handles Item Date sorting
 export class SortDateItems_Transaction extends jsTPS_Transaction {
-    constructor(listID, itemID, callback) {
+    constructor(listID, itemID, callback, callback2) {
         super();
         this.listID = listID;
         this.itemID = itemID;
 		this.updateFunction = callback;
+        this.updateFunction2 = callback2;
 	}
 
     async doTransaction() {
 		const { data } = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+        this.oldList = data;
 		return data;
     }
 
     async undoTransaction() {
-		const {data} = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		let newList = [];
+        for(let i=0; i< this.oldList.sortDateItems.length; i++){
+            let newObject = {
+                _id: this.oldList.sortDateItems[i]._id,
+		        id: this.oldList.sortDateItems[i].id,
+		        description: this.oldList.sortDateItems[i].description,
+		        due_date: this.oldList.sortDateItems[i].due_date,
+		        assigned_to: this.oldList.sortDateItems[i].assigned_to,
+		        completed:  this.oldList.sortDateItems[i].completed
+            }
+            newList.push(newObject);
+        }
+
+        const {data} = await this.updateFunction2({ variables: {_id: this.listID, oldList: newList}});
 		return data;
 
     }
@@ -93,20 +124,35 @@ export class SortDateItems_Transaction extends jsTPS_Transaction {
 
 //Handles Item Status sorting
 export class SortStatusItems_Transaction extends jsTPS_Transaction {
-    constructor(listID, itemID, callback) {
+    constructor(listID, itemID, callback, callback2) {
         super();
         this.listID = listID;
         this.itemID = itemID;
 		this.updateFunction = callback;
+        this.updateFunction2 = callback2;
 	}
 
     async doTransaction() {
 		const { data } = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+        this.oldList = data;
 		return data;
     }
 
     async undoTransaction() {
-		const {data} = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		let newList = [];
+        for(let i=0; i< this.oldList.sortStatusItems.length; i++){
+            let newObject = {
+                _id: this.oldList.sortStatusItems[i]._id,
+		        id: this.oldList.sortStatusItems[i].id,
+		        description: this.oldList.sortStatusItems[i].description,
+		        due_date: this.oldList.sortStatusItems[i].due_date,
+		        assigned_to: this.oldList.sortStatusItems[i].assigned_to,
+		        completed:  this.oldList.sortStatusItems[i].completed
+            }
+            newList.push(newObject);
+        }
+
+        const {data} = await this.updateFunction2({ variables: {_id: this.listID, oldList: newList}});
 		return data;
 
     }
@@ -115,20 +161,35 @@ export class SortStatusItems_Transaction extends jsTPS_Transaction {
 
 /*  Handles item assigned_to sorting */
 export class SortAssignedItems_Transaction extends jsTPS_Transaction {
-    constructor(listID, itemID, callback) {
+    constructor(listID, itemID, callback, callback2) {
         super();
         this.listID = listID;
         this.itemID = itemID;
 		this.updateFunction = callback;
+        this.updateFunction2 = callback2;
 	}
 
     async doTransaction() {
 		const { data } = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+        this.oldList = data;
 		return data;
     }
 
     async undoTransaction() {
-		const {data} = await this.updateFunction({ variables: { itemId: this.itemID, _id: this.listID}});
+		let newList = [];
+        for(let i=0; i< this.oldList.sortAssignedItems.length; i++){
+            let newObject = {
+                _id: this.oldList.sortAssignedItems[i]._id,
+		        id: this.oldList.sortAssignedItems[i].id,
+		        description: this.oldList.sortAssignedItems[i].description,
+		        due_date: this.oldList.sortAssignedItems[i].due_date,
+		        assigned_to: this.oldList.sortAssignedItems[i].assigned_to,
+		        completed:  this.oldList.sortAssignedItems[i].completed
+            }
+            newList.push(newObject);
+        }
+
+        const {data} = await this.updateFunction2({ variables: {_id: this.listID, oldList: newList}});
 		return data;
 
     }

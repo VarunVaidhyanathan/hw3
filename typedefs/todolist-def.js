@@ -34,6 +34,7 @@ const typeDefs = gql `
 		sortDateItems(_id: String!): [Item]
 		sortStatusItems(_id: String!): [Item]
 		sortAssignedItems(_id: String!): [Item]
+		sortTodoItemsUndo(_id: String!, oldList: [ItemInput]): [Item]
 	}
 	input FieldInput {
 		_id: String

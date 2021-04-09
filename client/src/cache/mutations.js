@@ -77,6 +77,20 @@ export const REORDER_ITEMS = gql`
 	}
 `;
 
+export const SORT_TODO_ITEMS_UNDO = gql`
+	mutation SortTodoItemsUndo($_id: String!, $oldList: [ItemInput]!) {
+		sortTodoItemsUndo(_id: $_id, oldList: $oldList ) {
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+			
+		}
+	}
+`;
+
 export const SORT_ITEMS_BY_DESCRIPTION = gql`
 	mutation SortTaskItems($_id: String!) {
 		sortTaskItems(_id: $_id) {

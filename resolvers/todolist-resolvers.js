@@ -166,6 +166,25 @@ module.exports = {
 			return (found.items);
 
 		},
+
+		sortTodoItemsUndo: async (_, args) => {
+			const { _id, oldList } = args;
+			let copyListItems = [];
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+			for(let i=0;i<oldList.length;i++){
+				for(let j=0; j< listItems.length; j++){
+					if(listItems[j].id === oldList[i].id){
+						console.log("Hello world");
+						copyListItems.push(listItems[j]);
+					}
+				}
+			}
+			console.log(copyListItems);
+			const updated = await Todolist.updateOne({_id: listId}, { items: copyListItems })
+			return (copyListItems);
+		},
 		//resolver to sort item task wise
 		sortTaskItems: async (_, args) => {
 			const { _id} = args;
@@ -239,9 +258,9 @@ module.exports = {
 			// 	}
 			// }
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-			if(updated) return (listItems);
-			listItems = copyListItems;
-			return (copyListItems);
+			if(updated) return (copyListItems);
+			//listItems = copyListItems;
+			return (listItems);
 			
 		},
 		//resolver to sort item date wise
@@ -317,9 +336,9 @@ module.exports = {
 			// 	}
 			// }
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-			if(updated) return (listItems);
-			listItems = copyListItems;
-			return (copyListItems);
+			if(updated) return (copyListItems);
+			//listItems = copyListItems;
+			return (listItems);
 			
 		},//resolver to sort item status wise
 		sortStatusItems: async (_, args) => {
@@ -374,9 +393,9 @@ module.exports = {
 			console.log("listItems: "+listItems);
 
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-			if(updated) return (listItems);
-			listItems = copyListItems;
-			return (copyListItems);
+			if(updated) return (copyListItems);
+			//listItems = copyListItems;
+			return (listItems);
 	
 		},
 		//resolver to sort item assigned_to wise
@@ -452,9 +471,9 @@ module.exports = {
 			// 	}
 			// }
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems })
-			if(updated) return (listItems);
-			listItems = copyListItems;
-			return (copyListItems);
+			if(updated) return (copyListItems);
+			//listItems = copyListItems;
+			return (listItems);
 			
 		}
 
